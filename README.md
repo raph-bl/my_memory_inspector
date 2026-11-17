@@ -1,4 +1,5 @@
 # my_memory_inspector 
+
 PoC for a memory inspector on macOS. Uses the built-in Mach kernel APIs to acquire a send right to a target PID's task_port (`task_for_pid`), then reads a copy of its virtual memory (`mach_vm_read_overwrite`) and walks its regions (`mach_vm_region`).
 
 > [!WARNING]  
