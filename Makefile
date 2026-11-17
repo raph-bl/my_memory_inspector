@@ -2,6 +2,7 @@ CC			= clang
 NAME		= memory_inspector
 
 VICTIM		= victim/victim
+INTERPRETER	= interpreter/interpreter 
 
 SRC			= $(shell find ./src -name "*.c")
 ASM			= $(shell find ./src -name "*.s")
@@ -16,6 +17,11 @@ all: $(NAME)
 # Cible de test : un process qu'on possede, signe avec get-task-allow
 # pour que task_for_pid reussisse sans root et SIP active.
 victim: $(VICTIM)
+
+interpreter: $(INTERPRETER)
+
+$(INTERPRETER): interpreter/interpreter.c
+	$(CC) -Wall $(ARCH) $< -o $@
 
 $(VICTIM): victim/victim.c
 	$(CC) -Wall $(ARCH) $< -o $@
