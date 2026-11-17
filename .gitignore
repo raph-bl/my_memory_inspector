@@ -1,0 +1,36 @@
+# Compiled source #
+###################
+*.o
+*.a
+*.so
+*.out
+*.exe
+*.obj
+*.elf
+
+# Executables
+unit_test
+a.out
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Coverage files
+*.gcno
+*.gcda
+*.gcov
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*~
