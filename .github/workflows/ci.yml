@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+# Cancel a previous run still in flight for the same ref.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    # macos-13 is Intel; the Makefile hardcodes -arch arm64, so Apple Silicon
+    # runners only.
+    name: Build & test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-15]
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Environment
+        run: |
+          uname -mrs
+          clang --version
+          csrutil status || true
+
+      - name: Build from clean (-Wall -Wextra -Werror)
+        run: make re
+
+      - name: Build and self-sign the victim
+        run: make victim
+
+      - name: Show victim entitlements
+        run: codesign -d --entitlements - victim/victim
+
+      - name: Smoke tests
+        run: ./tests/smoke.sh
+
+  analyze:
+    name: Static analysis
+    runs-on: macos-15
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: clang static analyzer
+        run: |
+          set -o pipefail
+          status=0
+          for f in src/*.c; do
+            echo "==> $f"
+            clang --analyze -Xanalyzer -analyzer-output=text \
+                  -Wall -Wextra -I./include -arch arm64 \
+                  "$f" -o /dev/null 2>&1 | tee "analyze-$(basename "$f").log"
+            if grep -q 'warning:' "analyze-$(basename "$f").log"; then
+              status=1
+            fi
+          done
+          exit $status
+
+      - name: Upload analyzer output
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-analysis-logs
+          path: analyze-*.log

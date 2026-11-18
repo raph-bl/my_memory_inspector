@@ -19,6 +19,9 @@ int main(void) {
 
     static char secret[] = "HELLO_FROM_VICTIM"; 
 
+    static int x = 42;
+    static size_t y = 42;
+
     fonction_de_test_void();
     fonction_de_test_int(12);
     fonction_de_test_char();
