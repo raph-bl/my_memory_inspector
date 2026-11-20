@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 
         inspect_process(target);
     } else if (access(argv[1], X_OK) == 0) {
-        printf("%s is a binary\n", argv[1]);
+       inspect_symbols(argv[1]); 
     } else {
         fprintf(stderr, "%s: neither a running pid nor an executable file\n",
                 argv[1]);
