@@ -10,7 +10,7 @@ int is_valid_pid(const char *arg) {
 
     long pid = strtol(arg, &end, 10);
 
-    if (errno == 0 || *end != '\0' || end == arg)
+    if (errno == ERANGE || end == arg || *end != '\0')
         return 0;
 
     if (pid <= 0 || pid > INT_MAX)
