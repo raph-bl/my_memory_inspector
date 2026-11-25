@@ -14,9 +14,21 @@ int inspect_symbols(const char *file) {
     }
 
     // get file size & go to start of file 
-    fseek(fp, 0, SEEK_END);
-    size_t file_size = ftell(fp);
-    rewind(fp); 
+    if (fseek(fp, 0, SEEK_END) != 0) {
+        perror("fseek");
+        fclose(fp);
+        return 1;
+    }
+
+    long end = ftell(fp);
+    if (end < 0) {
+        perror("ftell");
+        fclose(fp);
+        return 1;
+    }
+
+    size_t file_size = (size_t)end;
+    rewind(fp);
 
     uint8_t *buffer = malloc(file_size);
 
