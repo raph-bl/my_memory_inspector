@@ -28,7 +28,11 @@ int inspect_symbols(const char *file) {
     }
 
     size_t file_size = (size_t)end;
-    rewind(fp);
+    if(fseek(fp, 0, SEEK_SET) != 0) {
+        perror("fseek");
+        fclose(fp);
+        return 1;
+    }
 
     uint8_t *buffer = malloc(file_size);
 
