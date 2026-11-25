@@ -16,7 +16,7 @@ kern_return_t read_process_memory(
         bytes_read);
 }
 
-void inspect_process(pid_t pid) {
+int inspect_process(pid_t pid) {
     char name[256] = {0};
     char path[PROC_PIDPATHINFO_MAXSIZE] = {0};
     kern_return_t kern_return = 0;
@@ -27,7 +27,7 @@ void inspect_process(pid_t pid) {
 
     if (name_len <= 0) {
         printf("retrieve process name error");
-        return;
+        return 1;
     }
 
     kern_return = task_for_pid(mach_task_self(), pid, &task);
@@ -37,7 +37,7 @@ void inspect_process(pid_t pid) {
     printf("Name: %s\n", name);
     if (kern_return != KERN_SUCCESS) {
         printf("task_for_pid failed : %s\n", mach_error_string( kern_return )); 
-        return;
+        return 1;
     }
 
     printf("Port Task: %u\n", task);
@@ -46,7 +46,8 @@ void inspect_process(pid_t pid) {
         printf("Path: %s\n", path);
 
     memory_map(task);
-
+    mach_port_deallocate(mach_task_self(), task);
     printf("-----"); 
 
+    return 0;
 }

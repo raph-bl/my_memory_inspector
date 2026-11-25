@@ -13,7 +13,7 @@ kern_return_t read_process_memory(
         mach_vm_size_t *bytes_read
 );
 
-void inspect_process(pid_t);
+int inspect_process(pid_t);
 void memory_map(mach_port_t task);
 
 #endif
