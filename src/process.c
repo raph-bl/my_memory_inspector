@@ -26,7 +26,7 @@ int inspect_process(pid_t pid) {
     int path_len = proc_pidpath(pid, path, sizeof(path));
 
     if (name_len <= 0) {
-        printf("retrieve process name error");
+        printf("[!] Retrieve process name error\n");
         return 1;
     }
 

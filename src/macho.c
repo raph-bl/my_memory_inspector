@@ -58,7 +58,7 @@ int inspect_symbols(const char *file) {
         struct load_command *cmd = (struct load_command *) ptr;
 
         if (cmd->cmdsize < sizeof(struct load_command) || cmd->cmdsize > (size_t)(buffer+file_size - ptr)) {
-            fprintf(stderr, "invalid load commands\n"); 
+            fprintf(stderr, "[!] Invalid load commands\n"); 
             free(buffer);
             return 1;
         }
@@ -83,7 +83,7 @@ int inspect_symbols(const char *file) {
     // check for offsets & size before accessing mem
     if (symtab->symoff > file_size || symtab->stroff > file_size || symtab->nsyms > (file_size - symtab->symoff) / sizeof(struct nlist_64) ||
             symtab->strsize > file_size - symtab->stroff) {
-        fprintf(stderr, "invalid symbol table offsets\n");
+        fprintf(stderr, "[!] Invalid symbol table offsets\n");
         free(buffer);
         return 1;
     }
